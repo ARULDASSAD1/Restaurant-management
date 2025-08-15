@@ -68,19 +68,21 @@ export const createRestaurant = async (restaurant: Restaurant): Promise<Restaura
   return response.json();
 };
 
-export const updateRestaurant = async (id: string, restaurant: Restaurant): Promise<void> => {
+export const updateRestaurant = async (id: string, restaurant: Restaurant): Promise<boolean> => {
   const response = await fetch(`${API_BASE_URL}/restaurants/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json',
     },
     body: JSON.stringify(restaurant),
+
   });
   if (!response.ok) {
     throw new Error(`Error updating restaurant with ID ${id}: ${response.statusText}`);
   }
   // Assuming your PUT endpoint returns 200 OK or 204 No Content
 };
+ return response.ok;
 
 export const deleteRestaurant = async (id: string): Promise<void> => {
   const response = await fetch(`${API_BASE_URL}/restaurants/${id}`, {

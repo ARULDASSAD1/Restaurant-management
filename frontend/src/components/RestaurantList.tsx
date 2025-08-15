@@ -83,7 +83,7 @@ const RestaurantList: React.FC = () => {
       ) : (
         <Grid container spacing={3}>
           {restaurants.map((restaurant) => (
-            <Grid item key={restaurant.id} xs={12} sm={6} md={4} component="div">
+            <Grid key={restaurant.id} xs={12} sm={6} md={4} component="div">
               <Card raised>
                 <CardContent>
                   <Typography variant="h6" component="div">
