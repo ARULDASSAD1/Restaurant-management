@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { getRestaurantById, getMenuItemsByRestaurantId, Restaurant, MenuItem } from '../api';
 
 import {
@@ -77,6 +77,10 @@ const RestaurantDetail: React.FC = () => {
         <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
           Address: {restaurant.address}
         </Typography>
+        {restaurant.id && (
+ <Link to={`/restaurants/${restaurant.id}/edit`}>Edit Restaurant</Link>
+        )}
+
       </Paper>
 
       <Paper elevation={3} sx={{ p: 3 }}>
