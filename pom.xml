@@ -42,7 +42,7 @@
     <dependency>
       <groupId>com.google.cloud</groupId>
       <artifactId>google-cloud-firestore</artifactId>
-      <version>4.12.0</version> <!-- Use a compatible version -->
+      <version>3.10.0</version> <!-- Use a compatible version -->
     </dependency>
   </dependencies>
 
