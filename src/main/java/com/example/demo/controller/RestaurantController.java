@@ -20,8 +20,9 @@ public class RestaurantController {
     @PostMapping
     public ResponseEntity<Restaurant> createRestaurant(@RequestBody Restaurant restaurant) {
         try {
-            Restaurant createdRestaurant = restaurantService.createRestaurant(restaurant);
-            return new ResponseEntity<>(createdRestaurant, HttpStatus.CREATED);
+ String restaurantId = restaurantService.createRestaurant(restaurant);
+ // Assuming the service sets the ID on the passed restaurant object
+ return new ResponseEntity<>(restaurant, HttpStatus.CREATED);
         } catch (ExecutionException | InterruptedException e) {
             e.printStackTrace();
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -55,7 +56,7 @@ public class RestaurantController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<Restaurant> updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
+ public ResponseEntity<Void> updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
         // Ensure the ID in the path matches the ID in the request body (optional but good practice)
         if (restaurant.getId() != null && !restaurant.getId().equals(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
@@ -63,9 +64,9 @@ public class RestaurantController {
         restaurant.setId(id); // Set the ID from the path
 
         try {
-            Restaurant updatedRestaurant = restaurantService.updateRestaurant(restaurant);
-            if (updatedRestaurant != null) {
-                return new ResponseEntity<>(updatedRestaurant, HttpStatus.OK);
+ boolean updated = restaurantService.updateRestaurant(restaurant);
+ if (updated) {
+ return new ResponseEntity<>(HttpStatus.OK);
             } else {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             }
