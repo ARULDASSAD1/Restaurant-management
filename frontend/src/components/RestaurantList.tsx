@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Restaurant } from '../api';
-import { getAllRestaurants } from '../api';
+import { getAllRestaurants, deleteRestaurant } from '../api';
 
 import { 
   Container,
   Typography,
-  Grid,
   Card,
   CardContent,
   Button,
@@ -43,12 +42,11 @@ const RestaurantList: React.FC = () => {
     if (window.confirm('Are you sure you want to delete this restaurant?')) {
       try {
         // Call the delete API function
-        // Assuming you have a deleteRestaurant function in your api.ts
-        // await deleteRestaurant(id); 
+        await deleteRestaurant(id); 
         
         // For now, let's simulate deletion by filtering the state
         setRestaurants(restaurants.filter(restaurant => restaurant.id !== id));
-        console.log(`Restaurant with ID ${id} deleted (simulated).`);
+        console.log(`Restaurant with ID ${id} deleted.`);
       } catch (err) {
         setError('Failed to delete restaurant.');
         console.error('Error deleting restaurant:', err);
@@ -81,34 +79,52 @@ const RestaurantList: React.FC = () => {
       {restaurants.length === 0 ? (
         <Typography variant="body1">No restaurants found.</Typography>
       ) : (
-        <Grid container spacing={3}>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '24px', justifyContent: 'center' }}>
           {restaurants.map((restaurant) => (
-            <Grid key={restaurant.id} xs={12} sm={6} md={4} component="div">
-              <Card raised>
-                <CardContent>
-                  <Typography variant="h6" component="div">
+            <div key={restaurant.id} style={{ flex: '1 1 calc(33.33% - 24px)', minWidth: '280px', maxWidth: '350px' }}>
+              <Card raised sx={{
+                backgroundColor: '#f5f5f5', // Light grey background
+                borderRadius: '12px', // Rounded corners
+                boxShadow: '0 4px 8px rgba(0,0,0,0.1)', // Subtle shadow
+                transition: 'transform 0.3s ease-in-out', // Smooth transition for hover
+                '&:hover': {
+                  transform: 'translateY(-5px)', // Lift effect on hover
+                },
+                height: '100%', // Ensure cards in a row have same height
+                display: 'flex', // Use flex for content alignment within card
+                flexDirection: 'column', // Stack content vertically
+              }}>
+                <CardContent sx={{ flexGrow: 1 }}>
+                  <Typography variant="h6" component="div" sx={{ color: '#3f51b5', marginBottom: '8px' }}>
                     {restaurant.name}
                      <IconButton 
                        aria-label="delete" 
                        onClick={() => handleDelete(restaurant.id!)} // Use non-null assertion if you're sure id exists
+                       sx={{ color: '#f44336' }} // Red color for delete icon
                      > {/* Add delete icon here, e.g., from @mui/icons-material */} </IconButton>
                   </Typography>
-                  <Typography variant="body2" color="text.secondary">
+                  <Typography variant="body2" color="text.secondary" sx={{ color: '#616161', marginBottom: '16px' }}>
                     {restaurant.address}
                   </Typography>
                   <Button
                     component={Link}
                     to={`/restaurants/${restaurant.id}`}
                     variant="contained"
-                    sx={{ mt: 2 }}
+                    sx={{
+                      mt: 'auto', // Push button to the bottom
+                      backgroundColor: '#4caf50', // Green button
+                      '&:hover': {
+                        backgroundColor: '#388e3c', // Darker green on hover
+                      },
+                    }}
                   >
                     View Details
                   </Button>
                 </CardContent>
               </Card>
-            </Grid>
+            </div>
           ))}
-        </Grid>
+        </div>
       )}
     </Container>
   );
