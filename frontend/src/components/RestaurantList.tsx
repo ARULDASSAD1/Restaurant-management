@@ -1,7 +1,18 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { Restaurant } from '../api'; // Assuming Restaurant interface is in api.ts
-import { getAllRestaurants } from '../api'; // Assuming getAllRestaurants function is in api.ts
+import { Restaurant } from '../api';
+import { getAllRestaurants } from '../api';
+
+import {
+  Container,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  Button,
+  CircularProgress,
+  Box,
+} from '@mui/material';
 
 const RestaurantList: React.FC = () => {
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -26,30 +37,56 @@ const RestaurantList: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div>Loading restaurants...</div>;
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', mt: 4 }}>
+        <CircularProgress />
+        <Typography variant="h6" sx={{ ml: 2 }}>Loading restaurants...</Typography>
+      </Box>
+    );
   }
 
   if (error) {
-    return <div>Error: {error}</div>;
+    return (
+      <Container sx={{ mt: 4 }}>
+        <Typography color="error">Error: {error}</Typography>
+      </Container>
+    );
   }
 
   return (
-    <div>
-      <h2>Restaurants</h2>
+    <Container sx={{ mt: 4 }}>
+      <Typography variant="h4" component="h2" gutterBottom>
+        Restaurants
+      </Typography>
       {restaurants.length === 0 ? (
-        <p>No restaurants found.</p>
+        <Typography variant="body1">No restaurants found.</Typography>
       ) : (
-        <ul>
+        <Grid container spacing={3}>
           {restaurants.map((restaurant) => (
-            <li key={restaurant.id}>
-              <Link to={`/restaurants/${restaurant.id}`}>
-                {restaurant.name} - {restaurant.address}
-              </Link>
-            </li>
+            <Grid item key={restaurant.id} xs={12} sm={6} md={4} component="div">
+              <Card raised>
+                <CardContent>
+                  <Typography variant="h6" component="div">
+                    {restaurant.name}
+                  </Typography>
+                  <Typography variant="body2" color="text.secondary">
+                    {restaurant.address}
+                  </Typography>
+                  <Button
+                    component={Link}
+                    to={`/restaurants/${restaurant.id}`}
+                    variant="contained"
+                    sx={{ mt: 2 }}
+                  >
+                    View Details
+                  </Button>
+                </CardContent>
+              </Card>
+            </Grid>
           ))}
-        </ul>
+        </Grid>
       )}
-    </div>
+    </Container>
   );
 };
 

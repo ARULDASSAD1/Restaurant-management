@@ -1,5 +1,3 @@
-import { Restaurant, MenuItem, Order, OrderItem } from './types';
-
 const API_BASE_URL = 'http://localhost:8086/api';
 
 // Interfaces (adjust based on your backend model)
