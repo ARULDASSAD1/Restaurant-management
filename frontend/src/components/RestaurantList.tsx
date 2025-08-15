@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 import { Restaurant } from '../api';
 import { getAllRestaurants } from '../api';
 
-import {
+import { 
   Container,
   Typography,
   Grid,
@@ -11,6 +11,7 @@ import {
   CardContent,
   Button,
   CircularProgress,
+  IconButton,
   Box,
 } from '@mui/material';
 
@@ -19,6 +20,7 @@ const RestaurantList: React.FC = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
 
+  // Fetch restaurants on component mount
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
@@ -35,6 +37,24 @@ const RestaurantList: React.FC = () => {
 
     fetchRestaurants();
   }, []);
+
+  // Handle restaurant deletion
+  const handleDelete = async (id: string) => {
+    if (window.confirm('Are you sure you want to delete this restaurant?')) {
+      try {
+        // Call the delete API function
+        // Assuming you have a deleteRestaurant function in your api.ts
+        // await deleteRestaurant(id); 
+        
+        // For now, let's simulate deletion by filtering the state
+        setRestaurants(restaurants.filter(restaurant => restaurant.id !== id));
+        console.log(`Restaurant with ID ${id} deleted (simulated).`);
+      } catch (err) {
+        setError('Failed to delete restaurant.');
+        console.error('Error deleting restaurant:', err);
+      }
+    }
+  };
 
   if (loading) {
     return (
@@ -68,6 +88,10 @@ const RestaurantList: React.FC = () => {
                 <CardContent>
                   <Typography variant="h6" component="div">
                     {restaurant.name}
+                     <IconButton 
+                       aria-label="delete" 
+                       onClick={() => handleDelete(restaurant.id!)} // Use non-null assertion if you're sure id exists
+                     > {/* Add delete icon here, e.g., from @mui/icons-material */} </IconButton>
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     {restaurant.address}
