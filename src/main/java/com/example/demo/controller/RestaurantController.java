@@ -8,86 +8,65 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.concurrent.ExecutionException;
+
 
 @RestController
 @RequestMapping("/api/restaurants")
 public class RestaurantController {
 
+    private final RestaurantService restaurantService;
+
     @Autowired
-    private RestaurantService restaurantService;
+    public RestaurantController(RestaurantService restaurantService) {
+        this.restaurantService = restaurantService;
+    }
 
     @PostMapping
     public ResponseEntity<Restaurant> createRestaurant(@RequestBody Restaurant restaurant) {
-        try {
- String restaurantId = restaurantService.createRestaurant(restaurant);
- // Assuming the service sets the ID on the passed restaurant object
- return new ResponseEntity<>(restaurant, HttpStatus.CREATED);
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        String restaurantId = restaurantService.createRestaurant(restaurant);
+        // Assuming the service sets the ID on the passed restaurant object
+        return new ResponseEntity<>(restaurant, HttpStatus.CREATED);
     }
 
     @GetMapping("/{id}")
     public ResponseEntity<Restaurant> getRestaurantById(@PathVariable String id) {
-        try {
-            Restaurant restaurant = restaurantService.getRestaurantById(id);
-            if (restaurant != null) {
-                return new ResponseEntity<>(restaurant, HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        Restaurant restaurant = restaurantService.getRestaurantById(id);
+        if (restaurant != null) {
+            return new ResponseEntity<>(restaurant, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @GetMapping
     public ResponseEntity<List<Restaurant>> getAllRestaurants() {
-        try {
-            List<Restaurant> restaurants = restaurantService.getAllRestaurants();
-            return new ResponseEntity<>(restaurants, HttpStatus.OK);
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+        List<Restaurant> restaurants = restaurantService.getAllRestaurants();
+        return new ResponseEntity<>(restaurants, HttpStatus.OK);
     }
 
     @PutMapping("/{id}")
- public ResponseEntity<Void> updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
+    public ResponseEntity<Void> updateRestaurant(@PathVariable String id, @RequestBody Restaurant restaurant) {
         // Ensure the ID in the path matches the ID in the request body (optional but good practice)
         if (restaurant.getId() != null && !restaurant.getId().equals(id)) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
         restaurant.setId(id); // Set the ID from the path
 
-        try {
- boolean updated = restaurantService.updateRestaurant(restaurant);
- if (updated) {
- return new ResponseEntity<>(HttpStatus.OK);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        boolean updated = restaurantService.updateRestaurant(restaurant);
+        if (updated) {
+            return new ResponseEntity<>(HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteRestaurant(@PathVariable String id) {
-        try {
-            boolean deleted = restaurantService.deleteRestaurant(id);
-            if (deleted) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            } else {
-                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-            }
-        } catch (ExecutionException | InterruptedException e) {
-            e.printStackTrace();
-            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        boolean deleted = restaurantService.deleteRestaurant(id);
+        if (deleted) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
     }
 }

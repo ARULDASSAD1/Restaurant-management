@@ -18,8 +18,12 @@ public class OrderService {
     private static final String COLLECTION_NAME = "orders";
     private static final String ORDER_ITEMS_SUBCOLLECTION = "orderItems";
 
+    private final Firestore firestore;
+
     @Autowired
-    private Firestore firestore;
+    public OrderService(Firestore firestore) {
+        this.firestore = firestore;
+    }
 
     public Order createOrder(Order order) {
         DocumentReference docRef = firestore.collection(COLLECTION_NAME).document();
